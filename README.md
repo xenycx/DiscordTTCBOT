@@ -34,18 +34,20 @@ API_KEY=ttc_api_key
 ```
 Usage
 To run the bot, execute the main script:
-
+```python
 python main.py
-Make sure your bot is added to a Discord server and has the appropriate permissions to operate.
+```
+> Make sure your bot is added to a Discord server and has the appropriate permissions to operate.
 
 Dependencies
 The project requires the following Python libraries:
 
-discord.py>=2.0.0
+```discord.py>=2.0.0
 python-dotenv
 requests
 discord-py-interactions
 PyNaCl
+```
 Refer to the requirements.txt file for more details.
 
 Contributing
