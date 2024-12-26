@@ -20,18 +20,18 @@ async def on_ready():
     except Exception as e:
         print(f"Failed to sync commands: {e}")
 
-@bot.tree.command(name="ping", description="ბოტის დაყოვნების ჩვენება")
+@bot.tree.command(name="ping", description="დაყოვნების შემოწმება")
 async def ping(interaction: discord.Interaction):
-    await interaction.response.send_message(f"დაწყოვნება ({bot.latency*1000:.2f}მილიწამი)")
+    await interaction.response.send_message(f"დაყოვნება ({bot.latency*1000:.2f} მილიწამი)")
 
 async def setup():
+    bot.remove_command("help")  # Remove the default help command
     await bot.load_extension("cogs.stats")
     await bot.load_extension("cogs.stop")
     await bot.load_extension("cogs.buses")
     await bot.load_extension("cogs.busroute")
     await bot.load_extension("cogs.stops")
-    await bot.load_extension("cogs.help")
-    
+    await bot.load_extension("cogs.help")  # Ensure this line is present
 
 async def main():
     async with bot:

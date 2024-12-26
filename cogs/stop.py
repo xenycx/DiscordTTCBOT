@@ -2,6 +2,10 @@ import discord
 from discord.ext import commands
 import requests
 import config
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class Stop(commands.Cog):
     def __init__(self, bot):
@@ -33,22 +37,42 @@ class Stop(commands.Cog):
                 await interaction.followup.send("გაჩერება ვერ მოიძებნა ან ინფორმაცია არ არის ხელმისაწვდომი.")
                 return
 
-            response_lines = [f"🏁 Stop #{stop_no} - {stop_info.get('name', 'Unknown')}"]
-            for arrival in sorted(arrivals, key=lambda x: x.get('realtimeArrivalMinutes', 999)):
-                response_lines.append(self.format_arrival_time(arrival))
+            embed = discord.Embed(title=f"🏁 გაჩერება #{stop_no} - {stop_info.get('name', 'Unknown')}", color=discord.Color.blue())
+            arrival_texts = [self.format_arrival_time(arrival) for arrival in sorted(arrivals, key=lambda x: x.get('realtimeArrivalMinutes', 999))]
+            embed.add_field(name="მომსვლელი ავტობუსები", value="\n".join(arrival_texts), inline=False)
 
-            await interaction.followup.send("\n".join(response_lines))
+            await interaction.followup.send(embed=embed)
 
         except Exception as e:
             if config.DEBUG:
                 print(f"Error: {e}")
             await interaction.followup.send("შეცდომა მოხდა 😔")
 
+    @stopinfo.autocomplete("stop_no")
+    async def stop_no_autocomplete(self, interaction: discord.Interaction, current: str):
+        stop_info_url = f"https://transit.ttc.com.ge/pis-gateway/api/v2/stops?locale={config.LANG}"
+        headers = {"X-Api-Key": self.api_key}
+        try:
+            stops_response = requests.get(stop_info_url, headers=headers)
+            stops_response.raise_for_status() 
+            stops_data = stops_response.json()
+        except requests.RequestException as e:
+            logger.error(f"Failed to fetch stop info: {e}")
+            return []
+
+        stops = [stop for stop in stops_data if stop['code'] and stop['name'] and (current.lower() in stop['code'].lower() or current.lower() in stop['name'].lower())]
+        return [discord.app_commands.Choice(name=f"{stop['code']} - {stop['name']}", value=stop['code']) for stop in stops[:25]]
+
     def format_arrival_time(self, arrival):
         mode_emoji = {"BUS": "🚌", "METRO": "🚇", "MINIBUS": "🚐"}.get(arrival.get("vehicleMode", "BUS"), "🚌")
+        route = arrival.get("shortName", "Unknown Route")
+        destination = arrival.get("headsign", "Unknown Destination")
         minutes = arrival.get("realtimeArrivalMinutes", arrival.get("scheduledArrivalMinutes", "N/A"))
-        time_text = f"{int(minutes)}წთ" if isinstance(minutes, (int, float)) and minutes > 0 else "მოდის"
-        return f"{mode_emoji} {arrival.get('shortName', 'N/A')} → {arrival.get('headsign', 'N/A')}: {time_text}"
+        if isinstance(minutes, (int, float)) and minutes > 0:
+            time_text = f"{int(minutes)} წთ ⏳"
+        else:
+            time_text = "მოდის ⌛"
+        return f"{mode_emoji} - **__{route}__** -> {destination}: **__{time_text}__**"
 
 async def setup(bot):
     await bot.add_cog(Stop(bot))
