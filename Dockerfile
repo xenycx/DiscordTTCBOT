@@ -18,7 +18,6 @@ RUN pip install --no-cache-dir discord.py>=2.0.0
 RUN pip install --no-cache-dir python-dotenv
 RUN pip install --no-cache-dir requests
 RUN pip install --no-cache-dir asyncio
-RUN pip install --no-cache-dir logging
 RUN pip install --no-cache-dir discord-py-interactions
 RUN pip install --no-cache-dir PyNaCl
 
