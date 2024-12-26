@@ -27,8 +27,9 @@ class Stats(commands.Cog):
                 await interaction.followup.send("სტატისტიკის მიღება ვერ მოხდა 😔")
                 return
 
-            stats = self.format_stats(data['transactionsByTransportTypes'])
-            await interaction.followup.send(content=stats)
+            stats, total_passengers = self.format_stats(data['transactionsByTransportTypes'])
+            embed = self.create_embed(stats, total_passengers)
+            await interaction.followup.send(embed=embed)
 
         except Exception as e:
             if config.DEBUG:
@@ -39,14 +40,18 @@ class Stats(commands.Cog):
         total = sum(stats.values())
         sorted_stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)
         
-        response = ["📊 მგზავრების სტატისტიკა:"]
+        response = []
         for transport, count in sorted_stats:
             if count > 0:
                 percentage = (count / total) * 100
                 response.append(f"🔸 {transport}: {count:,} ({percentage:.1f}%)")
         
-        response.append(f"\n👥 მგზავრების რაოდენობა: {total:,}")
-        return "\n".join(response)
+        return "\n".join(response), total
+
+    def create_embed(self, stats, total_passengers):
+        embed = discord.Embed(title="📊 მგზავრების სტატისტიკა", description=stats, color=discord.Color.blue())
+        embed.set_footer(text=f"👥 მგზავრების რაოდენობა: {total_passengers:,}")
+        return embed
 
 async def setup(bot):
     await bot.add_cog(Stats(bot))

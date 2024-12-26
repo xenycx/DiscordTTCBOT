@@ -3,14 +3,14 @@ from discord.ext import commands
 import requests
 import config
 
-class BusRoute(commands.Cog):
+class Bus(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.api_key = config.API_KEY
 
-    @discord.app_commands.command(name="busroute", description="კონკრეტული ავტობუსის გაჩერებების ჩამონათვალი")
+    @discord.app_commands.command(name="bus", description="კონკრეტული ავტობუსის გაჩერებების ჩამონათვალი")
     @discord.app_commands.describe(bus_id="ავტობუსის ID")
-    async def busroute(self, interaction: discord.Interaction, bus_id: str):
+    async def Bus(self, interaction: discord.Interaction, bus_id: str):
         await interaction.response.defer()
         try:
             # ნაგულისხმევი patternSuffix to 1:01
@@ -48,7 +48,7 @@ class BusRoute(commands.Cog):
                 print(f"Response content: {stops_response.content}")
             await interaction.followup.send("შეცდომა მოხდა 😔")
 
-    @busroute.autocomplete("bus_id")
+    @Bus.autocomplete("bus_id")
     async def bus_id_autocomplete(self, interaction: discord.Interaction, current: str):
         url = "https://transit.ttc.com.ge/pis-gateway/api/v3/routes?modes=BUS&locale=ka"
         headers = {"X-Api-Key": self.api_key}
@@ -65,7 +65,7 @@ class BusRoute(commands.Cog):
 
     class PaginationView(discord.ui.View):
         def __init__(self, cog, pages, current_page, total_pages):
-            super().__init__(timeout=30)  # Buttons will disappear after 60 seconds of inactivity
+            super().__init__(timeout=30)
             self.cog = cog
             self.pages = pages
             self.current_page = current_page
@@ -109,4 +109,4 @@ class BusRoute(commands.Cog):
                 await self.message.edit(view=self)
 
 async def setup(bot):
-    await bot.add_cog(BusRoute(bot))
+    await bot.add_cog(Bus(bot))

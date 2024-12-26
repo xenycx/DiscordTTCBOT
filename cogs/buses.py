@@ -21,7 +21,7 @@ class Buses(commands.Cog):
                 await interaction.followup.send("ავტობუსების მოძებნა ვერ მოხერხდა 😔")
                 return
 
-            bus_list = [f"🚌 {bus['shortName']} - {bus['longName']}" for bus in data]
+            bus_list = [f"🚌 **__{bus['shortName']}__** - {bus['longName']}" for bus in data]
             pages = [bus_list[i:i+20] for i in range(0, len(bus_list), 20)]  # 20 buses per page
 
             embed = self.create_embed(pages[0], 1, len(pages))

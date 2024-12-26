@@ -29,7 +29,7 @@ async def setup():
     await bot.load_extension("cogs.stats")
     await bot.load_extension("cogs.stop")
     await bot.load_extension("cogs.buses")
-    await bot.load_extension("cogs.busroute")
+    await bot.load_extension("cogs.bus")
     await bot.load_extension("cogs.stops")
     await bot.load_extension("cogs.help")  # Ensure this line is present
 
