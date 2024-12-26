@@ -23,7 +23,7 @@ class Stop(commands.Cog):
 
             stop = next((stop for stop in stops_response if stop['code'] == stop_no or stop['name'] == stop_no), None)
             if not stop:
-                await interaction.followup.send("გაჩერება ვერ მოიძებნა ან ინფორმაცია არ არის ხელმისაწვდომი.")
+                await interaction.followup.send("გაჩერება ვერ მოიძებნა ან ინფორმაცია არ არის ხელმისაწვდომი **(ან ავტობუსები აღარ დადიან)**.")
                 return
 
             stop_no = stop['code']
@@ -34,7 +34,11 @@ class Stop(commands.Cog):
             arrivals = requests.get(arrivals_url, headers=headers).json()
 
             if not stop_info or not arrivals:
-                await interaction.followup.send("გაჩერება ვერ მოიძებნა ან ინფორმაცია არ არის ხელმისაწვდომი.")
+                await interaction.followup.send("გაჩერება ვერ მოიძებნა ან ინფორმაცია არ არის ხელმისაწვდომი **(ან ავტობუსები აღარ დადიან)**.")
+                return
+
+            if not arrivals:
+                await interaction.followup.send("ამ გაჩერებაზე ავტობუსები აღარ დადიან.")
                 return
 
             embed = discord.Embed(title=f"🏁 გაჩერება #{stop_no} - {stop_info.get('name', 'Unknown')}", color=discord.Color.blue())
@@ -43,9 +47,16 @@ class Stop(commands.Cog):
 
             await interaction.followup.send(embed=embed)
 
+        except requests.RequestException as e:
+            if config.DEBUG:
+                print(f"Request error: {e}")
+            await interaction.followup.send("შეცდომა მოხდა 😔")
+        except discord.errors.NotFound:
+            if config.DEBUG:
+                print("Interaction not found or timed out.")
         except Exception as e:
             if config.DEBUG:
-                print(f"Error: {e}")
+                print(f"Unexpected error: {e}")
             await interaction.followup.send("შეცდომა მოხდა 😔")
 
     @stopinfo.autocomplete("stop_no")
