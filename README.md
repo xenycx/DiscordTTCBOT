@@ -1,7 +1,7 @@
 
 # DiscordTTCBOT
 
-DiscordTTCBOT is a bot designed for Discord, written in Python. It leverages the discord.py library and Tbilisi Transport Company API to სhow you the statistics of the journey of different transports in the cities. This also shows you bus stop information and when the buses arrive.
+DiscordTTCBOT is a bot designed for Discord, written in Python. It leverages the discord.py library and Tbilisi Transport Company API to show you the statistics of the journey of different transports in the cities. This also shows you bus stop information and when the buses arrive.
 
 ## Setup
 
