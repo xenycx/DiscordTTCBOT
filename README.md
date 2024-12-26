@@ -1,5 +1,4 @@
-README.md
-Markdown
+
 # DiscordTTCBOT
 
 DiscordTTCBOT is a bot designed for Discord, written in Python. It leverages the discord.py library and other dependencies to provide various functionalities.
