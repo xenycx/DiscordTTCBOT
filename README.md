@@ -13,16 +13,25 @@ To set up the project locally, follow these steps:
    cd DiscordTTCBOT
 Create a virtual environment:
 
-sh
+```sh
 python3 -m venv venv
+```
+
+```sh
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+```
 Install the dependencies:
 
+```sh
 pip install -r requirements.txt
+```
 Set up environment variables:
 Create a .env file in the root directory of the project and add your Discord bot token and any other necessary environment variables. Example:
 
+```env
 DISCORD_TOKEN=your_discord_token_here
+API_KEY:ttc_api_key
+```
 Usage
 To run the bot, execute the main script:
 
