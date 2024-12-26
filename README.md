@@ -7,10 +7,10 @@ DiscordTTCBOT is a bot designed for Discord, written in Python. It leverages the
 
 To set up the project locally, follow these steps:
 
-1. **Clone the repository**:
-   ```sh
-   git clone https://github.com/xenyc1337/DiscordTTCBOT.git
-   cd DiscordTTCBOT
+**Clone the repository**:
+```sh
+git clone https://github.com/xenyc1337/DiscordTTCBOT.git
+cd DiscordTTCBOT
 Create a virtual environment:
 
 ```sh
