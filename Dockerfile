@@ -13,8 +13,14 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install each package individually
+RUN pip install --no-cache-dir discord.py>=2.0.0
+RUN pip install --no-cache-dir python-dotenv
+RUN pip install --no-cache-dir requests
+RUN pip install --no-cache-dir asyncio
+RUN pip install --no-cache-dir logging
+RUN pip install --no-cache-dir discord-py-interactions
+RUN pip install --no-cache-dir PyNaCl
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
