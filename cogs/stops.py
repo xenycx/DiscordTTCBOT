@@ -142,7 +142,7 @@ class Stops(commands.Cog):
                 arrivals = requests.get(arrivals_url, headers=headers).json()
 
                 if not stop_info or not arrivals:
-                    await interaction.response.send_message("გაჩერება ვერ მოიძებნა ან ინფორმაცია არ არის ხელმისაწვდომი (ან ავტობუსები აღარ დადიან).", ephemeral=True)
+                    await interaction.response.send_message("გაჩერება ვერ მოიძებნა ან ინფორმაცია არ არის ხელმისაწვდომი **(ან ავტობუსები აღარ დადიან).**", ephemeral=True)
                     return
 
                 if not arrivals:
