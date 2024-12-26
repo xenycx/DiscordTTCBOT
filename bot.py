@@ -6,7 +6,6 @@ import asyncio
 intents = discord.Intents.default()
 intents.messages = True
 intents.guilds = True
-intents.message_content = True  # Add this line
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
