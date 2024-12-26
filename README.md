@@ -11,6 +11,7 @@ To set up the project locally, follow these steps:
 ```sh
 git clone https://github.com/xenyc1337/DiscordTTCBOT.git
 cd DiscordTTCBOT
+```
 Create a virtual environment:
 
 ```sh
