@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  discordttcbot:
+    build: .
+    container_name: discordttcbot
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - API_KEY=${API_KEY}
+    volumes:
+      - .:/app
+    restart: always
