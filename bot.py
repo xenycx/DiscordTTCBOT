@@ -27,7 +27,10 @@ async def ping(interaction: discord.Interaction):
 async def setup():
     await bot.load_extension("cogs.stats")
     await bot.load_extension("cogs.station")
-    await bot.load_extension("cogs.buses")  # Ensure this line is present
+    await bot.load_extension("cogs.buses")
+    await bot.load_extension("cogs.busroute")
+    await bot.load_extension("cogs.stops")
+    
 
 async def main():
     async with bot:
