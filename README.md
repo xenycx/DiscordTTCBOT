@@ -30,7 +30,7 @@ Create a .env file in the root directory of the project and add your Discord bot
 
 ```env
 DISCORD_TOKEN=your_discord_token_here
-API_KEY:ttc_api_key
+API_KEY=ttc_api_key
 ```
 Usage
 To run the bot, execute the main script:
