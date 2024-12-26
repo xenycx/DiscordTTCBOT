@@ -3,13 +3,13 @@ from discord.ext import commands
 import requests
 import config
 
-class Station(commands.Cog):
+class Stop(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.api_key = config.API_KEY
 
-    @discord.app_commands.command(name="stopinfo", description="Get arrival times for a given stop")
-    @discord.app_commands.describe(stop_no="Stop number or name")
+    @discord.app_commands.command(name="stopinfo", description="მომსვლელი ავტობუსების ჩამონათვალი და  მოსვლის დრო გაჩერებებზე")
+    @discord.app_commands.describe(stop_no="გაჩერების ნომერი ან სახელი")
     async def stopinfo(self, interaction: discord.Interaction, stop_no: str):
         await interaction.response.defer()
         try:
@@ -19,7 +19,7 @@ class Station(commands.Cog):
 
             stop = next((stop for stop in stops_response if stop['code'] == stop_no or stop['name'] == stop_no), None)
             if not stop:
-                await interaction.followup.send("Stop not found or no data available.")
+                await interaction.followup.send("გაჩერება ვერ მოიძებნა ან ინფორმაცია არ არის ხელმისაწვდომი.")
                 return
 
             stop_no = stop['code']
@@ -30,7 +30,7 @@ class Station(commands.Cog):
             arrivals = requests.get(arrivals_url, headers=headers).json()
 
             if not stop_info or not arrivals:
-                await interaction.followup.send("Stop not found or no data available.")
+                await interaction.followup.send("გაჩერება ვერ მოიძებნა ან ინფორმაცია არ არის ხელმისაწვდომი.")
                 return
 
             response_lines = [f"🏁 Stop #{stop_no} - {stop_info.get('name', 'Unknown')}"]
@@ -42,7 +42,7 @@ class Station(commands.Cog):
         except Exception as e:
             if config.DEBUG:
                 print(f"Error: {e}")
-            await interaction.followup.send("An error occurred 😔")
+            await interaction.followup.send("შეცდომა მოხდა 😔")
 
     def format_arrival_time(self, arrival):
         mode_emoji = {"BUS": "🚌", "METRO": "🚇", "MINIBUS": "🚐"}.get(arrival.get("vehicleMode", "BUS"), "🚌")
@@ -51,4 +51,4 @@ class Station(commands.Cog):
         return f"{mode_emoji} {arrival.get('shortName', 'N/A')} → {arrival.get('headsign', 'N/A')}: {time_text}"
 
 async def setup(bot):
-    await bot.add_cog(Station(bot))
+    await bot.add_cog(Stop(bot))

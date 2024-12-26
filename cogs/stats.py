@@ -10,7 +10,7 @@ class Stats(commands.Cog):
 
     @discord.app_commands.command(
         name="stats",
-        description="Get passenger statistics"
+        description="მგზავრების სტატისტიკა"
     )
     async def stats(self, interaction: discord.Interaction):
         """Get current passenger statistics"""
@@ -24,7 +24,7 @@ class Stats(commands.Cog):
             data = response.json()
 
             if not data or 'transactionsByTransportTypes' not in data:
-                await interaction.followup.send("Could not fetch statistics 😔")
+                await interaction.followup.send("სტატისტიკის მიღება ვერ მოხდა 😔")
                 return
 
             stats = self.format_stats(data['transactionsByTransportTypes'])
@@ -33,19 +33,19 @@ class Stats(commands.Cog):
         except Exception as e:
             if config.DEBUG:
                 print(f"Error in stats command: {e}")
-            await interaction.followup.send("An error occurred 😔")
+            await interaction.followup.send("შეცდომა მოხდა 😔")
 
     def format_stats(self, stats):
         total = sum(stats.values())
         sorted_stats = sorted(stats.items(), key=lambda x: x[1], reverse=True)
         
-        response = ["📊 Passenger Statistics:"]
+        response = ["📊 მგზავრების სტატისტიკა:"]
         for transport, count in sorted_stats:
             if count > 0:
                 percentage = (count / total) * 100
                 response.append(f"🔸 {transport}: {count:,} ({percentage:.1f}%)")
         
-        response.append(f"\n👥 Total Passengers: {total:,}")
+        response.append(f"\n👥 მგზავრების რაოდენობა: {total:,}")
         return "\n".join(response)
 
 async def setup(bot):

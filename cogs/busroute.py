@@ -8,19 +8,19 @@ class BusRoute(commands.Cog):
         self.bot = bot
         self.api_key = config.API_KEY
 
-    @discord.app_commands.command(name="busroute", description="List all stops for a given bus route")
-    @discord.app_commands.describe(bus_id="Bus ID")
+    @discord.app_commands.command(name="busroute", description="კონკრეტული ავტობუსის გაჩერებების ჩამონათვალი")
+    @discord.app_commands.describe(bus_id="ავტობუსის ID")
     async def busroute(self, interaction: discord.Interaction, bus_id: str):
         await interaction.response.defer()
         try:
-            # Set default patternSuffix to 1:01
+            # ნაგულისხმევი patternSuffix to 1:01
             pattern_suffix = "1:01"
             stops_url = f"https://transit.ttc.com.ge/pis-gateway/api/v3/routes/{bus_id}/stops?patternSuffix={pattern_suffix}&locale=ka"
             headers = {"X-Api-Key": self.api_key}
             stops_response = requests.get(stops_url, headers=headers)
             
             if stops_response.status_code != 200:
-                await interaction.followup.send(f"Failed to fetch bus stops for the selected route. Status code: {stops_response.status_code}")
+                await interaction.followup.send(f"შერჩეული მარშრუტისთვის გაჩერებების მიღება ვერ მოხერხდა. სტატუს კოდი: {stops_response.status_code}")
                 if config.DEBUG:
                     print(f"Request URL: {stops_url}")
                     print(f"Request Headers: {headers}")
@@ -31,7 +31,7 @@ class BusRoute(commands.Cog):
             stops_data = stops_response.json()
 
             if not stops_data:
-                await interaction.followup.send("Could not fetch bus stops for the selected route 😔")
+                await interaction.followup.send("შერჩეული მარშუტისთვის გაჩერებების მიღება ვერ მოხერხდა 😔")
                 return
 
             stop_list = [f"🛑 {stop['code']} - {stop['name']}" for stop in stops_data]
@@ -46,7 +46,7 @@ class BusRoute(commands.Cog):
             if config.DEBUG:
                 print(f"Error: {e}")
                 print(f"Response content: {stops_response.content}")
-            await interaction.followup.send("An error occurred 😔")
+            await interaction.followup.send("შეცდომა მოხდა 😔")
 
     @busroute.autocomplete("bus_id")
     async def bus_id_autocomplete(self, interaction: discord.Interaction, current: str):
@@ -59,13 +59,13 @@ class BusRoute(commands.Cog):
         return [discord.app_commands.Choice(name=f"{route['shortName']} - {route['longName']}", value=route['id']) for route in routes[:25]]
 
     def create_embed(self, item_list, current_page, total_pages):
-        embed = discord.Embed(title="Bus Stops", description="\n".join(item_list), color=discord.Color.blue())
-        embed.set_footer(text=f"Page {current_page} of {total_pages}")
+        embed = discord.Embed(title="ავტობუსების გაჩერებები 🚌", description="\n".join(item_list), color=discord.Color.blue())
+        embed.set_footer(text=f"გვერდი {current_page} - {total_pages}-დან")
         return embed
 
     class PaginationView(discord.ui.View):
         def __init__(self, cog, pages, current_page, total_pages):
-            super().__init__(timeout=60)  # Buttons will disappear after 60 seconds of inactivity
+            super().__init__(timeout=30)  # Buttons will disappear after 60 seconds of inactivity
             self.cog = cog
             self.pages = pages
             self.current_page = current_page
@@ -78,7 +78,7 @@ class BusRoute(commands.Cog):
             self.children[0].disabled = self.current_page <= 1
             self.children[1].disabled = self.current_page >= self.total_pages
 
-        @discord.ui.button(label="Previous", style=discord.ButtonStyle.primary)
+        @discord.ui.button(label="წინა", style=discord.ButtonStyle.primary)
         async def previous(self, interaction: discord.Interaction, button: discord.ui.Button):
             try:
                 if self.current_page > 1:
@@ -88,9 +88,9 @@ class BusRoute(commands.Cog):
                     await interaction.response.edit_message(embed=embed, view=self)
             except Exception as e:
                 print(f"Error in previous button handler: {e}")
-                await interaction.response.send_message("An error occurred while handling the previous button.", ephemeral=True)
+                await interaction.response.send_message("შეცდომა მოხდა", ephemeral=True)
 
-        @discord.ui.button(label="Next", style=discord.ButtonStyle.primary)
+        @discord.ui.button(label="შემდეგი", style=discord.ButtonStyle.primary)
         async def next(self, interaction: discord.Interaction, button: discord.ui.Button):
             try:
                 if self.current_page < self.total_pages:
@@ -100,7 +100,7 @@ class BusRoute(commands.Cog):
                     await interaction.response.edit_message(embed=embed, view=self)
             except Exception as e:
                 print(f"Error in next button handler: {e}")
-                await interaction.response.send_message("An error occurred while handling the next button.", ephemeral=True)
+                await interaction.response.send_message("შეცდომა მოხდა.", ephemeral=True)
 
         async def on_timeout(self):
             for child in self.children:

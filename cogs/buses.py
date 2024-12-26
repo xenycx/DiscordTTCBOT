@@ -8,7 +8,7 @@ class Buses(commands.Cog):
         self.bot = bot
         self.api_key = config.API_KEY
 
-    @discord.app_commands.command(name="buses", description="List all bus routes")
+    @discord.app_commands.command(name="buses", description="ყველა ავტობუსის ჩამონათვალი")
     async def buses(self, interaction: discord.Interaction):
         await interaction.response.defer()
         try:
@@ -18,7 +18,7 @@ class Buses(commands.Cog):
             data = response.json()
 
             if not data:
-                await interaction.followup.send("Could not fetch bus routes 😔")
+                await interaction.followup.send("ავტობუსების მოძებნა ვერ მოხერხდა 😔")
                 return
 
             bus_list = [f"🚌 {bus['shortName']} - {bus['longName']}" for bus in data]
@@ -32,16 +32,16 @@ class Buses(commands.Cog):
         except Exception as e:
             if config.DEBUG:
                 print(f"Error: {e}")
-            await interaction.followup.send("An error occurred 😔")
+            await interaction.followup.send("შეცდომა მოხდა 😔")
 
     def create_embed(self, item_list, current_page, total_pages):
         embed = discord.Embed(title="Bus Routes", description="\n".join(item_list), color=discord.Color.blue())
-        embed.set_footer(text=f"Page {current_page} of {total_pages}")
+        embed.set_footer(text=f"გვერდი {current_page} - {total_pages}-დან")
         return embed
 
     class PaginationView(discord.ui.View):
         def __init__(self, cog, pages, current_page, total_pages):
-            super().__init__(timeout=60)  # Buttons will disappear after 60 seconds of inactivity
+            super().__init__(timeout=30)  # Buttons will disappear after 60 seconds of inactivity
             self.cog = cog
             self.pages = pages
             self.current_page = current_page
@@ -54,7 +54,7 @@ class Buses(commands.Cog):
             self.children[0].disabled = self.current_page <= 1
             self.children[1].disabled = self.current_page >= self.total_pages
 
-        @discord.ui.button(label="Previous", style=discord.ButtonStyle.primary)
+        @discord.ui.button(label="წინა", style=discord.ButtonStyle.primary)
         async def previous(self, interaction: discord.Interaction, button: discord.ui.Button):
             try:
                 if self.current_page > 1:
@@ -64,9 +64,9 @@ class Buses(commands.Cog):
                     await interaction.response.edit_message(embed=embed, view=self)
             except Exception as e:
                 print(f"Error in previous button handler: {e}")
-                await interaction.response.send_message("An error occurred while handling the previous button.", ephemeral=True)
+                await interaction.response.send_message("შეცდომა მოხდა", ephemeral=True)
 
-        @discord.ui.button(label="Next", style=discord.ButtonStyle.primary)
+        @discord.ui.button(label="შემდეგი", style=discord.ButtonStyle.primary)
         async def next(self, interaction: discord.Interaction, button: discord.ui.Button):
             try:
                 if self.current_page < self.total_pages:
@@ -76,7 +76,7 @@ class Buses(commands.Cog):
                     await interaction.response.edit_message(embed=embed, view=self)
             except Exception as e:
                 print(f"Error in next button handler: {e}")
-                await interaction.response.send_message("An error occurred while handling the next button.", ephemeral=True)
+                await interaction.response.send_message("შეცდომა მოხდა", ephemeral=True)
 
         async def on_timeout(self):
             for child in self.children:
