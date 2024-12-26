@@ -1,14 +1,12 @@
 import discord
 from discord.ext import commands
 import config
-import logging
 import asyncio
-
-logging.basicConfig(level=logging.INFO)
 
 intents = discord.Intents.default()
 intents.messages = True
 intents.guilds = True
+intents.message_content = True  # Add this line
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
@@ -29,6 +27,7 @@ async def ping(interaction: discord.Interaction):
 async def setup():
     await bot.load_extension("cogs.stats")
     await bot.load_extension("cogs.station")
+    await bot.load_extension("cogs.buses")  # Ensure this line is present
 
 async def main():
     async with bot:
