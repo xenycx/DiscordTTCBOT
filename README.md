@@ -42,13 +42,50 @@ python main.py
 Dependencies
 The project requires the following Python libraries:
 
-```discord.py>=2.0.0
+```
+discord.py>=2.0.0
 python-dotenv
 requests
+asyncio
 discord-py-interactions
 PyNaCl
 ```
 Refer to the requirements.txt file for more details.
+
+
+# you can also use docker package but i dont have a documentation for now because im too lazy
+## notes for me to build the docker
+
+
+```
+docker build -t ghcr.io/xenyc1337/discordttcbot:latest .
+```
+
+```
+echo $GITHUB_TOKEN | docker login ghcr.io -u xenyc1337 --password-stdin
+```
+
+```
+docker push ghcr.io/xenyc1337/discordttcbot:latest
+```
+
+# just use my image and you will be fine heres docker-compose.yml config
+
+```yml
+version: '3.8'
+
+services:
+  discordttcbot:
+    image: ghcr.io/xenyc1337/discordttcbot:latest
+    container_name: discordttcbot
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - API_KEY=${API_KEY}
+    restart: always
+```
+
+
+
 
 Contributing
 If you would like to contribute, please fork the repository and use a feature branch. Pull requests are warmly welcome.
