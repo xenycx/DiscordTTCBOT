@@ -2,21 +2,82 @@ import discord
 from discord.ext import commands
 import config
 import requests
-import os
-from groq import Groq
+import google.generativeai as genai
 
 class Stats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.api_key = config.API_KEY
-        self.groq_client = Groq(api_key=os.getenv('GROQ_API_KEY'))
-
+        
+        # Configure Google AI
+        genai.configure(api_key=config.GOOGLE_API_KEY)
+        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        
+    @discord.app_commands.command(
+        name="analyze",
+        description="ტრანსპორტის ანალიტიკა"
+    )
+    async def analyze_transport(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+    
+        try:
+            # Fetch current stats
+            url = 'https://ttc.com.ge/api/passengers'
+            headers = {'X-Api-Key': self.api_key}
+            response = requests.get(url, headers=headers)
+            data = response.json()['transactionsByTransportTypes']
+            
+            # Format data for analysis
+            total_passengers = sum(count for count in data.values())
+            top_transport = sorted(data.items(), key=lambda x: x[1], reverse=True)[:3]
+            stats_text = (
+                f"მგზავრების რაოდენობა: **{total_passengers}**\n"
+                f"Top 3 ტრანსპორტები:\n" +
+                "\n".join(f"- {mode}: **__{count}__**" for mode, count in top_transport)
+            )
+        
+            # Query Google AI
+            prompt = f"""
+            მოცემულია სატრანსპორტო მონაცემები. უშუალოდ, როგორც ანალიტიკოსმა, ქართულად წარმოადგინე 3 ძირითადი დასკვნა, რომლებიც გამომდინარეობს ამ მონაცემებიდან. არ გამოიყენო წინასიტყვაობა.
+            {stats_text}
+            """
+            
+            response = self.model.generate_content(
+                contents=prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.7,
+                    max_output_tokens=600
+                )
+            )
+            
+            analysis = response.text
+            
+            # Create embed response
+            embed = discord.Embed(
+                title="🚌 ტრანსპორტის ანალიზი",
+                description=analysis,
+                color=discord.Color.blue()
+            )
+            embed.add_field(
+                name="სტატისტიკა",
+                value=stats_text,
+                inline=False
+            )
+            embed.set_footer(text="⚠️ სტატისტიკა შექმნილია ხელოვნური ინტელექტის გამოყენებით")
+            
+            await interaction.followup.send(embed=embed)
+            
+        except Exception as e:
+            if config.DEBUG:
+                print(f"Error in analyze command: {e}")
+            await interaction.followup.send("ანალიზის დროს მოხდა შეცდომა 😔")
+    
     @discord.app_commands.command(
         name="stats",
         description="მგზავრების სტატისტიკა"
     )
 
-    
+
     async def stats(self, interaction: discord.Interaction):
         """Get current passenger statistics"""
         await interaction.response.defer()
@@ -59,24 +120,16 @@ class Stats(commands.Cog):
         embed.set_author(name="Tbilisi Transport Company", icon_url=self.bot.user.avatar.url)
         
         try:
-            completion = self.groq_client.chat.completions.create(
-                model="llama3-8b-8192",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "Provide interesting, lesser-known facts or useful tips about public transportation. Include statistics, safety tips, environmental impact, or historical facts. Use markdown formatting for emphasis."
-                    },
-                    {
-                        "role": "user", 
-                        "content": f"Share one interesting fact or tip about public transportation. Consider that {total_passengers:,} people used public transport today. Keep it under 30 words and make it engaging."
-                    }
-                ],
-                temperature=0.8,
-                max_tokens=70,
-                top_p=0.95,
-                stream=False
+            prompt = f"გაგვიზიარე ერთი საინტერესო ფაქტი საზოგადოებრივ ტრანსპორტზე. გაითვალისწინე რომ დღეს {total_passengers:,} ადამიანმა გამოიყენა ტრანსპორტი. პასუხი უნდა იყოს მოკლე, საინტერესო და მგზავრებთან დაკავშირებული. არ გამოიყენო წინასიტყვაობა"
+            
+            completion = self.model.generate_content(
+                contents=prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.6,
+                    max_output_tokens=200
+                )
             )
-            ai_comment = completion.choices[0].message.content
+            ai_comment = completion.text
             embed.add_field(name="⭐ Fun Fact ", value=ai_comment, inline=False)
         except Exception as e:
             if config.DEBUG:
