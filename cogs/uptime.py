@@ -18,18 +18,15 @@ class UptimeCog(commands.Cog):
         minutes = (uptime_delta.seconds % 3600) // 60
         seconds = uptime_delta.seconds % 60
 
-        # Create the embed
         embed = discord.Embed(
             color=discord.Color.blue()
         )
 
-        # Add bot's avatar and name as the author
         embed.set_author(name="Tbilisi Transport Company", icon_url=self.bot.user.avatar.url)
 
-        # Add fields for Local time, Current uptime, and Start time
-        embed.add_field(name="Local time", value=current_time.strftime("%Y-%m-%d %H:%M:%S"), inline=False)
-        embed.add_field(name="Current uptime", value=f"{days}d {hours}h {minutes}m {seconds}s", inline=True)
-        embed.add_field(name="Start time", value=self.start_time.strftime("%Y-%m-%d %H:%M:%S"), inline=True)
+        embed.add_field(name="ლოკალური დრო", value=current_time.strftime("%Y-%m-%d %H:%M:%S"), inline=False)
+        embed.add_field(name="მუშაობის დრო", value=f"{days}დ {hours}სთ {minutes}წთ {seconds}წმ", inline=True)
+        embed.add_field(name="ამუშავების დრო", value=self.start_time.strftime("%Y-%m-%d %H:%M:%S"), inline=True)
 
         await interaction.response.send_message(embed=embed)
 
