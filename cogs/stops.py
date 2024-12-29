@@ -8,7 +8,7 @@ class Stops(commands.Cog):
         self.bot = bot
         self.api_key = config.API_KEY
 
-    @discord.app_commands.command(name="stops", description="გაჩერებების ჩამონათვალი და ინფორმაცია")
+    @discord.app_commands.command(name="stops", description="გაჩერებები")
     @discord.app_commands.describe(search="ძებნა (არასავალდებულო)")
     async def stops(self, interaction: discord.Interaction, search: str = None):
         await interaction.response.defer()

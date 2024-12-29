@@ -12,6 +12,8 @@ class Stats(commands.Cog):
         name="stats",
         description="მგზავრების სტატისტიკა"
     )
+
+    
     async def stats(self, interaction: discord.Interaction):
         """Get current passenger statistics"""
         await interaction.response.defer()
@@ -51,6 +53,7 @@ class Stats(commands.Cog):
     def create_embed(self, stats, total_passengers):
         embed = discord.Embed(title="📊 მგზავრების სტატისტიკა", description=stats, color=discord.Color.blue())
         embed.set_footer(text=f"👥 მგზავრების რაოდენობა: {total_passengers:,}")
+        embed.set_author(name="Tbilisi Transport Company", icon_url=self.bot.user.avatar.url)
         return embed
 
 async def setup(bot):

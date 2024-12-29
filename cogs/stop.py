@@ -12,7 +12,7 @@ class Stop(commands.Cog):
         self.bot = bot
         self.api_key = config.API_KEY
 
-    @discord.app_commands.command(name="stopinfo", description="მომსვლელი ავტობუსების ჩამონათვალი და  მოსვლის დრო გაჩერებებზე")
+    @discord.app_commands.command(name="stopinfo", description="გაჩერების ინფორმაცია")
     @discord.app_commands.describe(stop_no="გაჩერების ნომერი ან სახელი")
     async def stopinfo(self, interaction: discord.Interaction, stop_no: str):
         await interaction.response.defer()

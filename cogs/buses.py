@@ -8,7 +8,7 @@ class Buses(commands.Cog):
         self.bot = bot
         self.api_key = config.API_KEY
 
-    @discord.app_commands.command(name="buses", description="ყველა ავტობუსის ჩამონათვალი")
+    @discord.app_commands.command(name="buses", description="ავტობუსის ძებნა")
     @discord.app_commands.describe(search="ძებნა (არასავალდებულო)")
     async def buses(self, interaction: discord.Interaction, search: str = None):
         await interaction.response.defer()

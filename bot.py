@@ -30,7 +30,8 @@ async def setup():
     await bot.load_extension("cogs.buses")
     await bot.load_extension("cogs.bus")
     await bot.load_extension("cogs.stops")
-    await bot.load_extension("cogs.help")  # Ensure this line is present
+    await bot.load_extension("cogs.help")
+    await bot.load_extension("cogs.uptime")
 
 async def main():
     async with bot:
