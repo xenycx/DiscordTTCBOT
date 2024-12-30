@@ -32,6 +32,7 @@ async def setup():
     await bot.load_extension("cogs.stops")
     await bot.load_extension("cogs.help")
     await bot.load_extension("cogs.uptime")
+    await bot.load_extension('cogs.ai')
 
 async def main():
     async with bot:
