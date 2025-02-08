@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 import config
 import requests
-import google.generativeai as genai
+from google import genai
+from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 
 class Stats(commands.Cog):
     def __init__(self, bot):
@@ -11,7 +12,10 @@ class Stats(commands.Cog):
         
         # Configure Google AI
         genai.configure(api_key=config.GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        self.client = genai.Client(api_key=config.GOOGLE_API_KEY)
+        self.google_search_tool = Tool(
+            google_search=GoogleSearch()
+        )
         
     @discord.app_commands.command(
         name="analyze",
@@ -42,15 +46,18 @@ class Stats(commands.Cog):
             {stats_text}
             """
             
-            response = self.model.generate_content(
+            response = await self.client.models.generate_content(
+                model="gemini-2.0-flash-exp",
                 contents=prompt,
-                generation_config=genai.types.GenerationConfig(
+                config=GenerateContentConfig(
                     temperature=0.7,
-                    max_output_tokens=600
+                    max_output_tokens=600,
+                    response_modalities=["TEXT"],
+                    tools=[self.google_search_tool]
                 )
             )
             
-            analysis = response.text
+            analysis = response.candidates[0].content.parts[0].text
             
             # Create embed response
             embed = discord.Embed(
@@ -122,14 +129,17 @@ class Stats(commands.Cog):
         try:
             prompt = f"გაგვიზიარე ერთი საინტერესო ფაქტი საზოგადოებრივ ტრანსპორტზე. გაითვალისწინე რომ დღეს {total_passengers:,} ადამიანმა გამოიყენა ტრანსპორტი. პასუხი უნდა იყოს მოკლე, საინტერესო და მგზავრებთან დაკავშირებული. არ გამოიყენო წინასიტყვაობა"
             
-            completion = self.model.generate_content(
+            response = await self.client.models.generate_content(
+                model="gemini-2.0-flash-exp",
                 contents=prompt,
-                generation_config=genai.types.GenerationConfig(
+                config=GenerateContentConfig(
                     temperature=0.6,
-                    max_output_tokens=200
+                    max_output_tokens=200,
+                    response_modalities=["TEXT"],
+                    tools=[self.google_search_tool]
                 )
             )
-            ai_comment = completion.text
+            ai_comment = response.candidates[0].content.parts[0].text
             embed.add_field(name="⭐ Fun Fact ", value=ai_comment, inline=False)
         except Exception as e:
             if config.DEBUG:
