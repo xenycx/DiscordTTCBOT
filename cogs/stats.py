@@ -11,8 +11,7 @@ class Stats(commands.Cog):
         self.api_key = config.API_KEY
         
         # Configure Google AI
-        genai.configure(api_key=config.GOOGLE_API_KEY)
-        self.client = genai.Client(api_key=config.GOOGLE_API_KEY)
+        self.client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
         self.google_search_tool = Tool(
             google_search=GoogleSearch()
         )
