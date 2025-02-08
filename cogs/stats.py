@@ -101,7 +101,7 @@ class Stats(commands.Cog):
                 return
 
             stats, total_passengers = self.format_stats(data['transactionsByTransportTypes'])
-            embed = self.create_embed(stats, total_passengers)
+            embed = await self.create_embed(stats, total_passengers)
             await interaction.followup.send(embed=embed)
 
         except Exception as e:
@@ -121,7 +121,7 @@ class Stats(commands.Cog):
         
         return "\n".join(response), total
 
-    def create_embed(self, stats, total_passengers):
+    async def create_embed(self, stats, total_passengers):
         embed = discord.Embed(title="📊 მგზავრების სტატისტიკა", description=stats, color=discord.Color.blue())
         embed.set_footer(text=f"👥 მგზავრების რაოდენობა: {total_passengers:,}")
         embed.set_author(name="Tbilisi Transport Company", icon_url=self.bot.user.avatar.url)
