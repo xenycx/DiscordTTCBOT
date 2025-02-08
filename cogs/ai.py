@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
-import google.generativeai as genai
-from google.generativeai import types
+from google import genai
+from google.genai.types import Tool, GenerateContentConfig, GoogleSearch
 import aiohttp
 from typing import Optional
 import io
@@ -19,7 +19,6 @@ AVAILABLE_MODELS = {
     "gemini-2.0-pro-exp-02-05": "Professional experimental version",
     "gemini-2.0-flash-thinking-exp-01-21": "Enhanced thinking capabilities",
     "gemini-2.0-flash-exp": "Experimental flash version",
-    "learnlm-1.5-pro-experimental": "Learning-focused experimental model",
     "gemini-1.5-pro": "Stable professional version",
     "gemini-1.5-flash": "Fast 1.5 version",
     "gemini-1.5-flash-8b": "Optimized 8B parameters version"
@@ -45,6 +44,8 @@ Your capabilities include:
 - Providing information about transport rules and regulations.
 - Understanding and analyzing images related to transport.
 - Providing general information about Tbilisi while emphasizing transport connections.
+- Answering general knowledge questions accurately and comprehensively.
+- **If you do not know the answer to a question, attempt to search for the information or suggest relevant resources.**
 
 ### Transport Command Guidelines:
 When assisting users, always encourage them to use the correct bot commands for accurate and updated transport information. The commands and their functions are:
@@ -78,7 +79,7 @@ When analyzing images, focus on transport-related details such as:
 
 class AIConfig:
     def __init__(self):
-        self.model_name = "gemini-2.0-flash-exp"
+        self.model_name = "gemini-2.0-flash"
         self.temperature = 0.7
         self.max_output_tokens = 800
         self.system_prompt = DEFAULT_SYSTEM_PROMPT
@@ -94,7 +95,7 @@ class AIConfig:
     @classmethod
     def from_dict(cls, data):
         config = cls()
-        config.model_name = data.get("model_name", "gemini-2.0-flash-exp")
+        config.model_name = data.get("model_name", "gemini-2.0-flash")
         config.temperature = data.get("temperature", 0.7)
         config.max_output_tokens = data.get("max_output_tokens", 800)
         config.system_prompt = data.get("system_prompt", DEFAULT_SYSTEM_PROMPT)
@@ -106,6 +107,10 @@ class AI(commands.Cog):
         self.chat_histories = {}  # Store chat histories per user
         self.user_configs = {}    # Store user configurations
         self.locks = {}  # Add locks to prevent concurrent requests from same user
+        self.client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+        self.google_search_tool = Tool(
+            google_search=GoogleSearch()
+        )
         
     async def cog_load(self):
         """Initialize the cog with proper timeouts"""
@@ -145,20 +150,69 @@ class AI(commands.Cog):
 
     def start_new_chat(self, user_id: str):
         config = self.get_user_config(user_id)
-        generation_config = genai.types.GenerationConfig(
-            temperature=config.temperature,
-            max_output_tokens=config.max_output_tokens
-        )
         
-        # Initialize model without search tool for now
-        model = genai.GenerativeModel(
-            config.model_name,
-            generation_config=generation_config
-        )
+        # Create initial message with system prompt
+        history = [
+            {"role": "user", "parts": [{"text": config.system_prompt}]},
+            {"role": "model", "parts": [{"text": "Understood. I'll act as TTC-AI with the specified guidelines."}]}
+        ]
         
-        chat = model.start_chat(history=[])
-        chat.send_message(config.system_prompt)
-        return chat
+        return {
+            "history": history,
+            "config": config
+        }
+
+    async def get_ai_response(self, chat_data, query, attachment_data=None):
+        config = chat_data["config"]
+        history = chat_data["history"]
+
+        # Prepare the query content
+        contents = query
+
+        # Add attachment data if present
+        if attachment_data:
+            if isinstance(attachment_data, str):  # Base64 image/video/audio
+                contents = {
+                    "parts": [
+                        {"text": query},
+                        {
+                            "inline_data": {
+                                "mime_type": attachment_data["mime_type"],
+                                "data": attachment_data["data"]
+                            }
+                        }
+                    ]
+                }
+
+        # Generate content with search capability
+        try:
+            response = await discord.utils.maybe_coroutine(
+                self.client.models.generate_content,
+                model=config.model_name,
+                contents=contents,
+                config=GenerateContentConfig(
+                    temperature=config.temperature,
+                    max_output_tokens=config.max_output_tokens,
+                    response_modalities=["TEXT"],
+                    tools=[self.google_search_tool]
+                )
+            )
+            
+            # Extract response text and any search metadata
+            text = response.candidates[0].content.parts[0].text
+            grounding_metadata = response.candidates[0].grounding_metadata if hasattr(response.candidates[0], 'grounding_metadata') else None
+            
+            # Update chat history
+            history.extend([
+                {"role": "user", "parts": [{"text": query}]},
+                {"role": "model", "parts": [{"text": text}]}
+            ])
+            
+            return text, grounding_metadata
+            
+        except Exception as e:
+            print(f"Error generating response: {str(e)}")
+            raise
 
     async def handle_command_error(self, interaction: discord.Interaction, error: Exception):
         if isinstance(error, discord.app_commands.errors.CheckFailure):
@@ -279,7 +333,6 @@ class AI(commands.Cog):
     ):
         user_id = str(interaction.user.id)
         
-        # Clean old locks first
         self.clean_old_locks()
         
         try:
@@ -292,180 +345,78 @@ class AI(commands.Cog):
 
             await interaction.response.defer(thinking=True)
 
-            # Initialize configs
-            config = self.get_user_config(user_id)
-            temp_config = AIConfig()
-            temp_config.model_name = model if model else config.model_name
-            temp_config.system_prompt = system_prompt if system_prompt else config.system_prompt
-            
-            # Validate and apply temperature
-            if temperature is not None:
-                if not 0.0 <= temperature <= 1.0:
-                    await interaction.followup.send("Temperature უნდა იყოს 0-დან 1-მდე!")
-                    return
-                temp_config.temperature = temperature
-            else:
-                temp_config.temperature = config.temperature
-                
-            # Validate and apply max tokens
-            if max_tokens is not None:
-                if not 1 <= max_tokens <= 2048:
-                    await interaction.followup.send("Max tokens უნდა იყოს 1-დან 2048-მდე!")
-                    return
-                temp_config.max_output_tokens = max_tokens
-            else:
-                temp_config.max_output_tokens = config.max_output_tokens
+            # Process attachment if present
+            attachment_data = None
+            if attachment:
+                if attachment.content_type.startswith('image/'):
+                    attachment_data = {
+                        "mime_type": "image/jpeg",
+                        "data": self.process_image(attachment.url)
+                    }
+                elif attachment.content_type.startswith('video/'):
+                    attachment_data = {
+                        "mime_type": attachment.content_type,
+                        "data": self.process_video(attachment.url)
+                    }
+                elif attachment.content_type.startswith('audio/'):
+                    attachment_data = {
+                        "mime_type": attachment.content_type,
+                        "data": self.process_audio(attachment.url)
+                    }
 
             # Get or create chat session
-            chat = await self.get_or_create_chat(
-                user_id, 
-                temp_config, 
-                force_new=(model or system_prompt or temperature is not None or max_tokens is not None)
+            if user_id not in self.chat_histories:
+                self.chat_histories[user_id] = self.start_new_chat(user_id)
+            
+            chat_data = self.chat_histories[user_id]
+
+            # Apply temporary config changes if specified
+            if any([model, system_prompt, temperature, max_tokens]):
+                temp_config = AIConfig()
+                temp_config.model_name = model if model else chat_data["config"].model_name
+                temp_config.system_prompt = system_prompt if system_prompt else chat_data["config"].system_prompt
+                temp_config.temperature = temperature if temperature is not None else chat_data["config"].temperature
+                temp_config.max_output_tokens = max_tokens if max_tokens is not None else chat_data["config"].max_output_tokens
+                chat_data["config"] = temp_config
+
+            # Get AI response
+            response_text, grounding_metadata = await self.get_ai_response(
+                chat_data,
+                question,
+                attachment_data
             )
 
-            if not chat:
-                await interaction.followup.send("⚠️ ვერ მოხერხდა AI სესიის შექმნა!")
-                return
+            # Create response embed
+            embed = self.create_response_embed(
+                interaction,
+                question,
+                response_text,
+                chat_data["config"],
+                attachment,
+                grounding_metadata,
+                model=model,
+                system_prompt=system_prompt,
+                temperature=temperature,
+                max_tokens=max_tokens
+            )
 
-            # Process message content
-            message_content = await self.prepare_message_content(interaction, question, attachment)
-            if isinstance(message_content, str) and message_content.startswith("ERROR:"):
-                await interaction.followup.send(message_content.replace("ERROR:", "⚠️"))
-                return
-
-            # Generate response
-            try:
-                response = await self.send_message_with_timeout(
-                    chat,
-                    message_content,
-                    generation_config=genai.types.GenerationConfig(
-                        temperature=temp_config.temperature,
-                        max_output_tokens=temp_config.max_output_tokens
-                    ),
-                    timeout=120
-                )
-
-                # Update chat history
-                await self.update_chat_history(user_id, question, response.text, temp_config.model_name)
-
-                # Send response
-                await self.send_response_embed(
-                    interaction,
-                    question,
-                    response.text,
-                    temp_config,
-                    attachment,
-                    model=model,
-                    system_prompt=system_prompt,
-                    temperature=temperature,
-                    max_tokens=max_tokens
-                )
-
-            except TimeoutError:
-                await interaction.followup.send(
-                    "⚠️ AI-მ ვერ უპასუხა დროულად. გთხოვთ სცადოთ თავიდან მოგვიანებით.",
-                    ephemeral=True
-                )
-            except Exception as e:
-                await self.handle_command_error(interaction, e)
+            await interaction.followup.send(embed=embed)
 
         except Exception as e:
             await self.handle_command_error(interaction, e)
         finally:
             self.release_lock(user_id)
 
-    async def get_or_create_chat(self, user_id: str, config: AIConfig, force_new: bool = False):
-        """Get existing chat or create a new one"""
-        try:
-            if force_new or user_id not in self.chat_histories:
-                chat = self.start_new_chat(user_id)
-                self.chat_histories[user_id] = {
-                    'chat': chat,
-                    'history': [],
-                    'last_interaction': discord.utils.utcnow()
-                }
-            else:
-                # Check if chat needs refresh due to timeout
-                last_interaction = self.chat_histories[user_id].get('last_interaction', discord.utils.utcnow())
-                if (discord.utils.utcnow() - last_interaction).total_seconds() > 1800:  # 30 minutes
-                    chat = self.start_new_chat(user_id)
-                    self.chat_histories[user_id]['chat'] = chat
-                else:
-                    chat = self.chat_histories[user_id]['chat']
-            return chat
-        except Exception as e:
-            print(f"Error in get_or_create_chat: {str(e)}")
-            return None
-
-    async def prepare_message_content(
+    def create_response_embed(
         self,
-        interaction: discord.Interaction,
-        question: str,
-        attachment: Optional[discord.Attachment]
-    ):
-        """Prepare message content with optional attachment"""
-        try:
-            formatted_question = f"[მომხმარებელი: {interaction.user.name}]\n{question}"
-            
-            if not attachment:
-                return formatted_question
-
-            file_base64 = None
-            mime_type = None
-            
-            if attachment.content_type.startswith('image/'):
-                file_base64 = self.process_image(attachment.url)
-                mime_type = "image/jpeg"
-            elif attachment.content_type.startswith('video/'):
-                file_base64 = self.process_video(attachment.url)
-                mime_type = attachment.content_type
-            elif attachment.content_type.startswith('audio/'):
-                file_base64 = self.process_audio(attachment.url)
-                mime_type = attachment.content_type
-            else:
-                return "ERROR: Unsupported file type provided."
-
-            if not file_base64:
-                return "ERROR: Failed to process the file."
-
-            return [{
-                "text": formatted_question
-            }, {
-                "inline_data": {
-                    "mime_type": mime_type,
-                    "data": file_base64
-                }
-            }]
-        except Exception as e:
-            return f"ERROR: {str(e)}"
-
-    async def update_chat_history(
-        self,
-        user_id: str,
-        question: str,
-        response_text: str,
-        model_name: str
-    ):
-        """Update chat history with new conversation"""
-        if user_id in self.chat_histories:
-            self.chat_histories[user_id]['last_interaction'] = discord.utils.utcnow()
-            self.chat_histories[user_id]['history'].append({
-                'question': question,
-                'response': response_text,
-                'timestamp': discord.utils.utcnow().isoformat(),
-                'model': model_name
-            })
-
-    async def send_response_embed(
-        self,
-        interaction: discord.Interaction,
-        question: str,
-        response_text: str,
-        config: AIConfig,
-        attachment: Optional[discord.Attachment] = None,
+        interaction,
+        question,
+        response_text,
+        config,
+        attachment=None,
+        grounding_metadata=None,
         **kwargs
     ):
-        """Send response embed with all information"""
         embed = discord.Embed(
             title="💬 TTC-ის პასუხი",
             description=response_text,
@@ -477,6 +428,20 @@ class AI(commands.Cog):
             value=question,
             inline=False
         )
+
+        # Add grounding metadata if available
+        if grounding_metadata and hasattr(grounding_metadata, 'groundingChunks'):
+            sources = []
+            for chunk in grounding_metadata.groundingChunks:
+                if hasattr(chunk, 'web'):
+                    sources.append(f"[{chunk.web.title}]({chunk.web.uri})")
+            
+            if sources:
+                embed.add_field(
+                    name="🔍 წყაროები",
+                    value="\n".join(sources[:5]),  # Limit to top 5 sources
+                    inline=False
+                )
 
         # Add custom parameters if any were used
         if any(kwargs.values()):
@@ -499,7 +464,7 @@ class AI(commands.Cog):
         if attachment and attachment.content_type.startswith('image/'):
             embed.set_image(url=attachment.url)
 
-        await interaction.followup.send(embed=embed)
+        return embed
 
     @discord.app_commands.command(
         name="history",

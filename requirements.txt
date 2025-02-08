@@ -1,6 +1,6 @@
 discord.py>=2.0.0
 python-dotenv
 requests
-google-generativeai>=0.3.0
+google-genai
 aiohttp
 Pillow

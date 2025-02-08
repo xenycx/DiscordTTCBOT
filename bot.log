@@ -94,3 +94,52 @@ AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mea
 2025-02-08 17:24:21,234 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: 63f13f608d64e1c409e23afe8dba67d2).
 2025-02-08 17:24:21,245 - INFO - discord - Bot connected to Discord
 2025-02-08 17:32:50,528 - INFO - discord - Bot shutdown requested
+2025-02-08 18:28:24,884 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 18:28:26,071 - INFO - discord.client - logging in using static token
+2025-02-08 18:28:27,535 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: d391d2cf4e0afb2a75ed87a3efd297e8).
+2025-02-08 18:28:27,592 - INFO - discord - Bot connected to Discord
+2025-02-08 18:51:17,759 - WARNING - discord - Bot disconnected from Discord
+2025-02-08 18:51:18,740 - INFO - discord.gateway - Shard ID None has successfully RESUMED session d391d2cf4e0afb2a75ed87a3efd297e8.
+2025-02-08 18:51:18,757 - INFO - discord - Bot session resumed
+2025-02-08 18:59:36,235 - INFO - discord - Bot shutdown requested
+2025-02-08 18:59:46,952 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 18:59:52,805 - ERROR - discord - Unexpected error: Extension 'cogs.ai' raised an error: ImportError: cannot import name 'genai' from 'google' (unknown location)
+2025-02-08 18:59:57,817 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 18:59:57,817 - ERROR - discord - Unexpected error: Extension 'cogs.ai' raised an error: ImportError: cannot import name 'genai' from 'google' (unknown location)
+2025-02-08 19:00:02,838 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 19:00:02,838 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
+2025-02-08 19:00:07,842 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 19:00:07,857 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
+2025-02-08 19:00:12,864 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 19:00:12,864 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
+2025-02-08 19:00:17,874 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 19:00:17,874 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
+2025-02-08 19:00:22,882 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 19:00:22,882 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
+2025-02-08 19:00:23,778 - INFO - discord - Bot shutdown requested
+2025-02-08 19:08:56,536 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 19:09:08,535 - ERROR - discord - Unexpected error: Extension 'cogs.ai' raised an error: KeyError: 'GEMINI_API_KEY'
+2025-02-08 19:09:13,547 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 19:09:13,547 - ERROR - discord - Unexpected error: Extension 'cogs.ai' raised an error: KeyError: 'GEMINI_API_KEY'
+2025-02-08 19:09:18,084 - INFO - discord - Bot shutdown requested
+2025-02-08 19:09:46,966 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
+2025-02-08 19:09:48,761 - INFO - discord.client - logging in using static token
+2025-02-08 19:09:50,112 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: 76a93426fe7843b1ce170a72b8ae4dfd).
+2025-02-08 19:09:50,112 - INFO - discord - Bot connected to Discord
+2025-02-08 19:10:03,354 - INFO - root - AFC is enabled with max remote calls: 10.
+2025-02-08 19:10:06,356 - INFO - root - AFC remote call 1 is done.
+2025-02-08 19:11:16,075 - INFO - root - AFC is enabled with max remote calls: 10.
+2025-02-08 19:11:18,870 - INFO - root - AFC remote call 1 is done.
+2025-02-08 19:11:41,213 - INFO - root - AFC is enabled with max remote calls: 10.
+2025-02-08 19:11:44,042 - INFO - root - AFC remote call 1 is done.
+2025-02-08 19:13:40,196 - ERROR - discord.client - Attempting a reconnect in 1.37s
+Traceback (most recent call last):
+  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\venv\Lib\site-packages\discord\client.py", line 667, in connect
+    await self.ws.poll_event()
+  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\venv\Lib\site-packages\discord\gateway.py", line 648, in poll_event
+    raise ConnectionClosed(self.socket, shard_id=self.shard_id, code=code) from None
+discord.errors.ConnectionClosed: Shard ID None WebSocket closed with 1000
+2025-02-08 19:13:41,780 - WARNING - discord - Bot disconnected from Discord
+2025-02-08 19:13:47,375 - INFO - discord.gateway - Shard ID None has successfully RESUMED session 76a93426fe7843b1ce170a72b8ae4dfd.
+2025-02-08 19:13:47,789 - INFO - discord - Bot session resumed
+2025-02-08 19:14:46,904 - INFO - discord - Bot shutdown requested
