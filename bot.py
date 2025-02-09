@@ -5,10 +5,11 @@ import asyncio
 import logging
 import sys
 
-# Enhanced logging configuration
+# Simple logging configuration
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+    format='%(asctime)s - %(name)s: %(message)s',
+    datefmt='%H:%M:%S',
     handlers=[
         logging.StreamHandler(sys.stdout),
         logging.FileHandler('bot.log')
@@ -20,59 +21,49 @@ intents = discord.Intents.default()
 intents.messages = True
 intents.guilds = True
 
-# Configure bot with proper timeout settings
 bot = commands.Bot(
     command_prefix="!",
     intents=intents,
-    chunk_guilds_at_startup=False,  # Reduce startup load
-    heartbeat_timeout=150.0,        # Increase heartbeat timeout
-    gateway_queue_size=512          # Increase gateway queue size
+    chunk_guilds_at_startup=False,
+    heartbeat_timeout=150.0,
+    gateway_queue_size=512
 )
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user} (ID: {bot.user.id})')
-    print('------')
+    logger.info(f'Bot ready: {bot.user} ({bot.user.id})')
     try:
         synced = await bot.tree.sync()
-        print(f"Synced {len(synced)} command(s)")
+        logger.info(f"Synced {len(synced)} commands")
     except Exception as e:
-        print(f"Failed to sync commands: {e}")
+        logger.error(f"Sync failed: {e}")
 
 @bot.event
 async def on_error(event, *args, **kwargs):
-    logger.error(f"Error in {event}", exc_info=True)
+    logger.error(f"Event error: {event}")
 
 @bot.event
 async def on_connect():
-    logger.info("Bot connected to Discord")
+    logger.info("Connected")
 
 @bot.event
 async def on_disconnect():
-    logger.warning("Bot disconnected from Discord")
+    logger.warning("Disconnected")
 
 @bot.event
 async def on_resumed():
-    logger.info("Bot session resumed")
-
-# Remove or comment out the problematic on_interaction event
-# @bot.event
-# async def on_interaction(interaction):
-#     try:
-#         await interaction
-#     except Exception as e:
-#         logging.error(f"Error handling interaction: {str(e)}", exc_info=True)
+    logger.info("Session resumed")
 
 @bot.event
 async def on_view_timeout(view):
-    logger.info(f"View timed out: {view}")
+    logger.info("View timeout")
 
 @bot.tree.command(name="ping", description="დაყოვნების შემოწმება")
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message(f"დაყოვნება ({bot.latency*1000:.2f} მილიწამი)")
 
 async def setup():
-    bot.remove_command("help")  # Remove the default help command
+    bot.remove_command("help")
     await bot.load_extension("cogs.stats")
     await bot.load_extension("cogs.stop")
     await bot.load_extension("cogs.buses")
@@ -81,6 +72,7 @@ async def setup():
     await bot.load_extension("cogs.help")
     await bot.load_extension("cogs.uptime")
     await bot.load_extension('cogs.ai')
+    logger.info("Extensions loaded")
 
 async def main():
     max_retries = 5
@@ -92,19 +84,19 @@ async def main():
                 await setup()
                 await bot.start(config.TOKEN)
         except discord.errors.ConnectionClosed:
-            logger.warning("Connection closed, attempting to reconnect...")
+            logger.warning("Connection lost, reconnecting...")
             await asyncio.sleep(retry_delay)
         except discord.errors.GatewayNotFound:
-            logger.error("Discord gateway not found, retrying in 5 seconds...")
+            logger.error("Gateway error, retrying...")
             await asyncio.sleep(retry_delay)
         except Exception as e:
-            logger.error(f"Unexpected error: {str(e)}")
+            logger.error(f"Fatal: {str(e)}")
             await asyncio.sleep(retry_delay)
 
 if __name__ == '__main__':
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.info("Bot shutdown requested")
+        logger.info("Shutdown requested")
     except Exception as e:
-        logger.error(f"Fatal error: {str(e)}")
+        logger.error(f"Fatal: {str(e)}")

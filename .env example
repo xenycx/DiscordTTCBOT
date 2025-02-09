@@ -1,2 +1,4 @@
 DISCORD_TOKEN=BOT_TOKEN # Replace this
 API_KEY=TTC_API_KEY # Replace this
+OPENROUTER_API_KEY=your_openrouter_api_key_here # Add this
+DISCORD_WEBHOOK_URL= # Add this
