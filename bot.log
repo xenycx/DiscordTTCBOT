@@ -1,145 +1,39 @@
-2025-02-08 17:07:13,465 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 17:07:24,781 - INFO - discord.client - logging in using static token
-2025-02-08 17:07:26,561 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: 263d4cba9b40197385b3beb4d5eb6569).
-2025-02-08 17:07:26,561 - INFO - discord - Bot connected to Discord
-2025-02-08 17:07:42,521 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    await bot.process_interaction(interaction)
-          ^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:07:46,092 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    await bot.process_interaction(interaction)
-          ^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:08:00,444 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    await bot.process_interaction(interaction)
-          ^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:08:02,283 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    await bot.process_interaction(interaction)
-          ^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:08:04,081 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    await bot.process_interaction(interaction)
-          ^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:08:05,814 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    await bot.process_interaction(interaction)
-          ^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:08:08,511 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    await bot.process_interaction(interaction)
-          ^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:08:14,021 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    await bot.process_interaction(interaction)
-          ^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:10:29,984 - INFO - discord - Bot shutdown requested
-2025-02-08 17:10:36,099 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 17:10:37,764 - INFO - discord.client - logging in using static token
-2025-02-08 17:10:39,446 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: 16fcafe19eda48121b1e52c35d9faef9).
-2025-02-08 17:10:39,446 - INFO - discord - Bot connected to Discord
-2025-02-08 17:10:48,831 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    except Exception as e:
-              ^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:10:51,271 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    except Exception as e:
-              ^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:10:56,541 - ERROR - discord - Error handling interaction: 'Bot' object has no attribute 'process_interaction'
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\bot.py", line 62, in on_interaction
-    except Exception as e:
-              ^^^^^^^^^^^^^
-AttributeError: 'Bot' object has no attribute 'process_interaction'. Did you mean: 'on_interaction'?
-2025-02-08 17:11:19,479 - INFO - discord - Bot shutdown requested
-2025-02-08 17:11:42,781 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 17:11:43,311 - INFO - discord.client - logging in using static token
-2025-02-08 17:11:44,512 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: d7ecc977e3c6efbbf1285cf97da901a5).
-2025-02-08 17:11:44,527 - INFO - discord - Bot connected to Discord
-2025-02-08 17:19:12,767 - INFO - discord - Bot shutdown requested
-2025-02-08 17:19:22,281 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 17:19:23,734 - INFO - discord.client - logging in using static token
-2025-02-08 17:19:25,171 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: 6b769a9f04d2dc478f93b964f87b4414).
-2025-02-08 17:19:25,171 - INFO - discord - Bot connected to Discord
-2025-02-08 17:22:51,580 - INFO - discord - Bot shutdown requested
-2025-02-08 17:23:06,971 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 17:23:09,892 - INFO - discord.client - logging in using static token
-2025-02-08 17:23:11,434 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: 26736dfb7db7e1a76880d9c744981523).
-2025-02-08 17:23:11,434 - INFO - discord - Bot connected to Discord
-2025-02-08 17:24:06,471 - INFO - discord - Bot shutdown requested
-2025-02-08 17:24:18,711 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 17:24:20,011 - INFO - discord.client - logging in using static token
-2025-02-08 17:24:21,234 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: 63f13f608d64e1c409e23afe8dba67d2).
-2025-02-08 17:24:21,245 - INFO - discord - Bot connected to Discord
-2025-02-08 17:32:50,528 - INFO - discord - Bot shutdown requested
-2025-02-08 18:28:24,884 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 18:28:26,071 - INFO - discord.client - logging in using static token
-2025-02-08 18:28:27,535 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: d391d2cf4e0afb2a75ed87a3efd297e8).
-2025-02-08 18:28:27,592 - INFO - discord - Bot connected to Discord
-2025-02-08 18:51:17,759 - WARNING - discord - Bot disconnected from Discord
-2025-02-08 18:51:18,740 - INFO - discord.gateway - Shard ID None has successfully RESUMED session d391d2cf4e0afb2a75ed87a3efd297e8.
-2025-02-08 18:51:18,757 - INFO - discord - Bot session resumed
-2025-02-08 18:59:36,235 - INFO - discord - Bot shutdown requested
-2025-02-08 18:59:46,952 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 18:59:52,805 - ERROR - discord - Unexpected error: Extension 'cogs.ai' raised an error: ImportError: cannot import name 'genai' from 'google' (unknown location)
-2025-02-08 18:59:57,817 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 18:59:57,817 - ERROR - discord - Unexpected error: Extension 'cogs.ai' raised an error: ImportError: cannot import name 'genai' from 'google' (unknown location)
-2025-02-08 19:00:02,838 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 19:00:02,838 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
-2025-02-08 19:00:07,842 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 19:00:07,857 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
-2025-02-08 19:00:12,864 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 19:00:12,864 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
-2025-02-08 19:00:17,874 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 19:00:17,874 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
-2025-02-08 19:00:22,882 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 19:00:22,882 - ERROR - discord - Unexpected error: Extension 'cogs.stats' is already loaded.
-2025-02-08 19:00:23,778 - INFO - discord - Bot shutdown requested
-2025-02-08 19:08:56,536 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 19:09:08,535 - ERROR - discord - Unexpected error: Extension 'cogs.ai' raised an error: KeyError: 'GEMINI_API_KEY'
-2025-02-08 19:09:13,547 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 19:09:13,547 - ERROR - discord - Unexpected error: Extension 'cogs.ai' raised an error: KeyError: 'GEMINI_API_KEY'
-2025-02-08 19:09:18,084 - INFO - discord - Bot shutdown requested
-2025-02-08 19:09:46,966 - WARNING - discord.ext.commands.bot - Privileged message content intent is missing, commands may not work as expected.
-2025-02-08 19:09:48,761 - INFO - discord.client - logging in using static token
-2025-02-08 19:09:50,112 - INFO - discord.gateway - Shard ID None has connected to Gateway (Session ID: 76a93426fe7843b1ce170a72b8ae4dfd).
-2025-02-08 19:09:50,112 - INFO - discord - Bot connected to Discord
-2025-02-08 19:10:03,354 - INFO - root - AFC is enabled with max remote calls: 10.
-2025-02-08 19:10:06,356 - INFO - root - AFC remote call 1 is done.
-2025-02-08 19:11:16,075 - INFO - root - AFC is enabled with max remote calls: 10.
-2025-02-08 19:11:18,870 - INFO - root - AFC remote call 1 is done.
-2025-02-08 19:11:41,213 - INFO - root - AFC is enabled with max remote calls: 10.
-2025-02-08 19:11:44,042 - INFO - root - AFC remote call 1 is done.
-2025-02-08 19:13:40,196 - ERROR - discord.client - Attempting a reconnect in 1.37s
-Traceback (most recent call last):
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\venv\Lib\site-packages\discord\client.py", line 667, in connect
-    await self.ws.poll_event()
-  File "C:\Users\xenyc\Desktop\Projects\DiscordTTCBOT\venv\Lib\site-packages\discord\gateway.py", line 648, in poll_event
-    raise ConnectionClosed(self.socket, shard_id=self.shard_id, code=code) from None
-discord.errors.ConnectionClosed: Shard ID None WebSocket closed with 1000
-2025-02-08 19:13:41,780 - WARNING - discord - Bot disconnected from Discord
-2025-02-08 19:13:47,375 - INFO - discord.gateway - Shard ID None has successfully RESUMED session 76a93426fe7843b1ce170a72b8ae4dfd.
-2025-02-08 19:13:47,789 - INFO - discord - Bot session resumed
-2025-02-08 19:14:46,904 - INFO - discord - Bot shutdown requested
+20:42:59 - discord.ext.commands.bot: Privileged message content intent is missing, commands may not work as expected.
+20:42:59 - discord: Extensions loaded
+20:42:59 - discord.client: logging in using static token
+20:43:02 - discord: Fatal: task_done() called too many times
+20:43:02 - asyncio: Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000224D5C07650>
+20:43:05 - discord.ext.commands.bot: Privileged message content intent is missing, commands may not work as expected.
+20:43:05 - discord: Extensions loaded
+20:43:05 - discord.client: logging in using static token
+20:43:08 - discord.gateway: Shard ID None has connected to Gateway (Session ID: afeeef426a7d278a6626034567bcce1f).
+20:43:08 - discord: Connected
+20:43:10 - discord: Bot ready: Kaitlyn#9417 (818565594059112498)
+20:43:11 - discord: Synced 10 commands
+20:43:17 - ai.cog: Processing request from user 536115838969839626
+20:43:17 - ai.cog: AI request - Query: hey...
+20:43:20 - ai.cog: AI response received: 118 chars
+20:43:20 - ai.cog: Response sent to user 536115838969839626
+20:43:20 - ai.cog: Request completed for user 536115838969839626
+20:43:47 - ai.cog: Processing request from user 536115838969839626
+20:43:47 - ai.cog: AI request - Query: how are you...
+20:43:51 - ai.cog: AI response received: 173 chars
+20:43:51 - ai.cog: Response sent to user 536115838969839626
+20:43:51 - ai.cog: Request completed for user 536115838969839626
+20:44:04 - discord: Fatal: task_done() called too many times
+20:44:04 - asyncio: Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x00000119AF57A4E0>
+21:12:15 - discord.ext.commands.bot: Privileged message content intent is missing, commands may not work as expected.
+21:12:15 - discord: Fatal: Extension 'cogs.stats' raised an error: SyntaxError: invalid syntax (stats.py, line 5)
+21:12:20 - discord.ext.commands.bot: Privileged message content intent is missing, commands may not work as expected.
+21:12:20 - discord: Fatal: Extension 'cogs.stats' raised an error: SyntaxError: invalid syntax (stats.py, line 5)
+21:12:21 - discord: Shutdown requested
+21:12:44 - discord.ext.commands.bot: Privileged message content intent is missing, commands may not work as expected.
+21:12:44 - discord: Extensions loaded
+21:12:44 - discord.client: logging in using static token
+21:12:48 - discord.gateway: Shard ID None has connected to Gateway (Session ID: 7739d25ebe76bb6a057153ac17731fc7).
+21:12:48 - discord: Connected
+21:12:50 - discord: Bot ready: Kaitlyn#9417 (818565594059112498)
+21:12:51 - discord: Synced 10 commands
+21:13:46 - discord: Shutdown requested
