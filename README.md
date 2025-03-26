@@ -1,4 +1,4 @@
-## Arhived because private API no longer works. I might fix it in the future but currently it does not work. (AI features and ask command still work tho)
+## Archived because private API no longer works. I might fix it in the future but currently it does not work. (AI features and ask command still work tho)
 
 
 # DiscordTTCBOT
