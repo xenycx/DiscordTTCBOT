@@ -104,7 +104,7 @@ class Help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.categories = {
-            "🚌 ტრანსპორტი": ["bus", "buses", "stops", "stop", "stopinfo"],
+            "🚌 ტრანსპორტი": ["stop", "bus", "routes", "stops", "nearby", "watch", "unwatch", "apistatus"],
             "🤖 AI": ["ask", "history", "clear_history"],
             "ℹ️ სისტემური": ["help", "ping", "uptime"],
             "📊 სტატისტიკა": ["stats"]
