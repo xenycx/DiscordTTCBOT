@@ -27,6 +27,8 @@ jobs:
           from discord.ext import commands
           from ttc.polyline import decode
           assert decode("_p~iF~ps|U_ulLnnqC_mqNvxq`@")[0] == (38.5, -120.2)
+          from ttc.maprender import _font
+          assert _font("georgian", 14).path.endswith("NotoSansGeorgian-Bold.ttf"), "Georgian font missing"
           import cogs.transit as t
           async def main():
               bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())

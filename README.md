@@ -72,7 +72,7 @@ python bot.py
 | `TILE_URL` / `TILE_SIZE` / `TILE_ATTRIBUTION` | | Use a different raster map provider |
 | `TILE_CACHE_DIR` | | Where map tiles are cached (default `cache/tiles`) |
 
-> Map labels need a Georgian-capable font (Noto Sans Georgian or DejaVu Sans). The Docker image installs them.
+> Map label fonts (Noto Sans + Noto Sans Georgian, SIL OFL 1.1) are bundled in `ttc/fonts`, so nothing extra needs installing.
 
 ## 🐳 Docker
 

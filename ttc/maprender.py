@@ -32,19 +32,18 @@ CACHE_DIR = Path(os.getenv("TILE_CACHE_DIR", "cache/tiles"))
 USER_AGENT = "DiscordTTCBot/2.0 (+https://github.com/xenycx/DiscordTTCBOT)"
 SS = 2  # supersampling factor for smooth overlays
 
+_FONT_DIR = Path(__file__).resolve().parent / "fonts"  # bundled Noto (SIL OFL 1.1)
 _FONT_CANDIDATES = {
     "georgian": [
+        str(_FONT_DIR / "NotoSansGeorgian-Bold.ttf"),
         "/usr/share/fonts/noto/NotoSansGeorgian-Bold.ttf",
         "/usr/share/fonts/truetype/noto/NotoSansGeorgian-Bold.ttf",
-        "/usr/share/fonts/opentype/noto/NotoSansGeorgian-Bold.ttf",
-        "fonts/NotoSansGeorgian-Bold.ttf",
     ],
     "latin": [
+        str(_FONT_DIR / "NotoSans-Bold.ttf"),
         "/usr/share/fonts/noto/NotoSans-Bold.ttf",
         "/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf",
-        "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-        "fonts/NotoSans-Bold.ttf",
     ],
 }
 _font_cache: dict[tuple[str, int], ImageFont.ImageFont] = {}
@@ -63,7 +62,10 @@ def _font(kind: str, size: int) -> ImageFont.ImageFont:
             if os.path.exists(p):
                 font = ImageFont.truetype(p, size)
                 break
-        _font_cache[ck] = font or ImageFont.load_default(size)
+        if font is None:
+            log.warning("No %s font found; map labels may show boxes. Expected %s", kind, _FONT_DIR)
+            font = ImageFont.load_default(size)
+        _font_cache[ck] = font
     return _font_cache[ck]
 
 

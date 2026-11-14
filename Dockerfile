@@ -1,10 +1,6 @@
 FROM python:3.12-slim
 
-# Fonts for map labels (Georgian + Latin)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        fonts-noto-core fonts-dejavu-core \
-    && rm -rf /var/lib/apt/lists/*
-
+# Map label fonts are bundled in ttc/fonts (Noto, SIL OFL 1.1).
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

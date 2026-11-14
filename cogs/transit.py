@@ -48,6 +48,13 @@ def _stop_title(st: dict) -> str:
     return f"{st.get('name', '?')} [{code}]" if code else st.get("name", "?")
 
 
+def _route_label(r: dict, sep: str = " — ", fallback: str | None = None) -> str:
+    """'37 — Vake - Station', or just '37' when TTC has no long name for the route."""
+    short = str(r.get("shortName") or "?")
+    long_ = (r.get("longName") or "").strip() or (fallback or "")
+    return f"{short}{sep}{long_}" if long_ else short
+
+
 def _pattern_label(p: dict, fallback: str) -> str:
     return p.get("headsign") or p.get("name") or p.get("destination") or fallback
 
@@ -142,7 +149,8 @@ class Transit(commands.Cog):
         first_stop = stops[0].get("name") if stops else None
         heading_to = _pattern_label(current, last_stop or suffix)
 
-        scene = MapScene(title=f"{route.get('shortName', '')} — {route.get('longName', '')}"[:70],
+        ends = f"{first_stop} – {last_stop}" if first_stop and last_stop else None
+        scene = MapScene(title=_route_label(route, fallback=ends)[:70],
                          subtitle=f"მიმართულება: {heading_to}", max_zoom=16)
         for s in suffixes:
             pts = decode(((polylines or {}).get(s) or {}).get("encodedValue", ""))
@@ -161,7 +169,7 @@ class Transit(commands.Cog):
                                               label=str(route.get("shortName", ""))[:3]))
 
         e = discord.Embed(
-            title=f"{MODE_EMOJI.get(mode, '🚌')} {route.get('shortName', '?')} · {route.get('longName', '')}",
+            title=f"{MODE_EMOJI.get(mode, '🚌')} {_route_label(route, ' · ', ends)}"[:256],
             color=_color_int(color),
             timestamp=discord.utils.utcnow(),
         )
@@ -205,7 +213,7 @@ class Transit(commands.Cog):
         except TTCError:
             return []
         return [app_commands.Choice(
-            name=f"{MODE_EMOJI.get(r.get('mode', 'BUS'), '')} {r.get('shortName', '')} — {r.get('longName', '')}"[:100],
+            name=f"{MODE_EMOJI.get(r.get('mode', 'BUS'), '')} {_route_label(r)}"[:100],
             value=str(r.get("id")))
             for r in TTCClient.search_routes(routes, current, 25) if r.get("id")]
 
@@ -262,8 +270,12 @@ class Transit(commands.Cog):
             m = re.match(r"(\d+)", str(r.get("shortName", "")))
             return (0, int(m.group(1)), "") if m else (1, 0, str(r.get("shortName", "")))
 
-        rows = [f"{MODE_EMOJI.get(r.get('mode', mode or 'BUS'), '🚌')} **{r.get('shortName', '?')}** — {r.get('longName', '')}"
-                for r in sorted(routes, key=sort_key)]
+        def row(r):
+            long_ = (r.get("longName") or "").strip()
+            return (f"{MODE_EMOJI.get(r.get('mode', mode or 'BUS'), '🚌')} **{r.get('shortName', '?')}**"
+                    + (f" — {long_}" if long_ else ""))
+
+        rows = [row(r) for r in sorted(routes, key=sort_key)]
         await Paginator.send(interaction, f"📋 მარშრუტები ({len(rows)})", rows, per_page=20)
 
     @app_commands.command(name="stops", description="🔎 გაჩერებების ძებნა")
