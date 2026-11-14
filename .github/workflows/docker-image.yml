@@ -2,36 +2,63 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+      - name: Smoke test (compile + load cogs)
+        run: |
+          python3 -m pip install -q -r requirements.txt
+          python3 -m compileall -q bot.py config.py webhook_handler.py ttc cogs
+          python3 - <<'PY'
+          import asyncio, discord
+          from discord.ext import commands
+          from ttc.polyline import decode
+          assert decode("_p~iF~ps|U_ulLnnqC_mqNvxq`@")[0] == (38.5, -120.2)
+          import cogs.transit as t
+          async def main():
+              bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+              await t.setup(bot)
+              cog = bot.get_cog("Transit"); cog.watch_loop.cancel(); await cog.api.close()
+              print("commands:", [c.name for c in bot.tree.get_commands()])
+          asyncio.run(main())
+          PY
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image name (lowercase)
+        id: img
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/discordttcbot" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           context: .
-          push: true
-          tags: ghcr.io/${{ github.repository_owner }}/discordttcbot:latest
-
-      - name: Post build info
-        run: echo "Docker image has been built and pushed to GHCR."
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ steps.img.outputs.name }}:latest
+            ${{ steps.img.outputs.name }}:${{ github.sha }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
