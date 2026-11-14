@@ -32,11 +32,6 @@ bot = commands.Bot(
 @bot.event
 async def on_ready():
     logger.info(f'Bot ready: {bot.user} ({bot.user.id})')
-    try:
-        synced = await bot.tree.sync()
-        logger.info(f"Synced {len(synced)} commands")
-    except Exception as e:
-        logger.error(f"Sync failed: {e}")
 
 @bot.event
 async def on_error(event, *args, **kwargs):
@@ -64,39 +59,29 @@ async def ping(interaction: discord.Interaction):
 
 async def setup():
     bot.remove_command("help")
-    await bot.load_extension("cogs.stats")
-    await bot.load_extension("cogs.stop")
-    await bot.load_extension("cogs.buses")
-    await bot.load_extension("cogs.bus")
-    await bot.load_extension("cogs.stops")
-    await bot.load_extension("cogs.help")
-    await bot.load_extension("cogs.uptime")
-    await bot.load_extension('cogs.ai')
+    for ext in ("cogs.stats", "cogs.transit", "cogs.help", "cogs.uptime", "cogs.ai"):
+        try:
+            await bot.load_extension(ext)
+        except Exception:
+            logger.exception(f"Failed to load {ext}")
     logger.info("Extensions loaded")
+    try:
+        synced = await bot.tree.sync()
+        logger.info(f"Synced {len(synced)} commands")
+    except Exception as e:
+        logger.error(f"Sync failed: {e}")
+
+bot.setup_hook = setup
 
 async def main():
-    max_retries = 5
-    retry_delay = 5
-
-    while True:
-        try:
-            async with bot:
-                await setup()
-                await bot.start(config.TOKEN)
-        except discord.errors.ConnectionClosed:
-            logger.warning("Connection lost, reconnecting...")
-            await asyncio.sleep(retry_delay)
-        except discord.errors.GatewayNotFound:
-            logger.error("Gateway error, retrying...")
-            await asyncio.sleep(retry_delay)
-        except Exception as e:
-            logger.error(f"Fatal: {str(e)}")
-            await asyncio.sleep(retry_delay)
+    if not config.TOKEN:
+        raise SystemExit("DISCORD_TOKEN is not set (see 'env example')")
+    # discord.py reconnects on its own; this only guards the initial login.
+    async with bot:
+        await bot.start(config.TOKEN, reconnect=True)
 
 if __name__ == '__main__':
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         logger.info("Shutdown requested")
-    except Exception as e:
-        logger.error(f"Fatal: {str(e)}")

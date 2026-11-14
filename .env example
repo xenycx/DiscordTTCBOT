@@ -1,7 +1,12 @@
-DISCORD_TOKEN=BOT_TOKEN # Replace this
-API_KEY=TTC_API_KEY # Replace this
-<<<<<<< HEAD
-=======
-OPENROUTER_API_KEY=your_openrouter_api_key_here # Add this
-DISCORD_WEBHOOK_URL= # Add this
->>>>>>> recovery-branch
+# Required
+DISCORD_TOKEN=your_discord_bot_token
+
+# Optional: TTC gateway key override. Leave empty, the bot discovers the
+# current key automatically and refreshes it when TTC rotates it.
+API_KEY=
+
+# Optional: AI features (/ask, /analyze)
+OPENROUTER_API_KEY=
+
+# Optional: Discord webhook for logs (also announces TTC key rotations)
+DISCORD_WEBHOOK_URL=

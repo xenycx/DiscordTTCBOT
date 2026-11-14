@@ -11,4 +11,5 @@ venv/
 
 # IDEs
 .vscode/
-.idea/
+.idea/cache/
+*.log
