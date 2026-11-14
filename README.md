@@ -77,7 +77,7 @@ python bot.py
 ## 🐳 Docker
 
 ```sh
-docker build -t ghcr.io/xenyc1337/discordttcbot:latest .
+docker build -t ghcr.io/xenycx/discordttcbot:latest .
 docker compose up -d
 ```
 
