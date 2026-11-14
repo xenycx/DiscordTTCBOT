@@ -1,6 +1,6 @@
 services:
   discordttcbot:
-    image: ghcr.io/xenycx/discordttcbot:latest
+    image: ghcr.io/xenycx/ttc-bot:latest
     container_name: discordttcbot
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}

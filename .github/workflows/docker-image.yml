@@ -49,7 +49,7 @@ jobs:
 
       - name: Image name (lowercase)
         id: img
-        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/discordttcbot" >> "$GITHUB_OUTPUT"
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/ttc-bot" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
