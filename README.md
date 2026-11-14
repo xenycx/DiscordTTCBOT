@@ -40,7 +40,7 @@ powered by the same API as the official Tbilisi Transport app.
 | Command | Description |
 |---|---|
 | `/stop <stop> [route]` | Live arrivals at a stop, optionally filtered to one route |
-| `/bus <route>` | Route map with live vehicles · ⇄ direction · 🔄 refresh · 📋 stop list |
+| `/bus <route>` | Route map with live vehicles · 🔁 direction · 🔄 refresh · 📋 stop list |
 | `/routes [mode]` | All bus 🚌 / metro 🚇 / ropeway 🚡 routes |
 | `/stops <query>` | Search stops by name or code |
 | `/nearby <place>` | Closest stops to an address or `lat, lon` |

@@ -179,6 +179,17 @@ class Transit(commands.Cog):
         file = discord.File(await self.maps.render(scene), filename="route.png")
         return route, suffix, stops, e, file
 
+    async def cog_app_command_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
+        log.exception("command %s failed", interaction.command and interaction.command.name, exc_info=error)
+        msg = "😔 შეცდომა მოხდა. სცადე თავიდან."
+        try:
+            if interaction.response.is_done():
+                await interaction.followup.send(msg, ephemeral=True)
+            else:
+                await interaction.response.send_message(msg, ephemeral=True)
+        except discord.HTTPException:
+            pass
+
     # ============================================================ autocomplete
     async def stop_autocomplete(self, interaction: discord.Interaction, current: str):
         try:
@@ -430,7 +441,7 @@ class RouteView(discord.ui.View):
             return await interaction.followup.send(ERR, ephemeral=True)
         await interaction.edit_original_response(embed=embed, attachments=[file], view=self)
 
-    @discord.ui.button(label="მიმართულება", emoji="⇄", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="მიმართულება", emoji="🔁", style=discord.ButtonStyle.primary)
     async def swap(self, interaction: discord.Interaction, _):
         patterns = self.route.get("patterns") or []
         cur = next((p for p in patterns if p.get("patternSuffix") == self.suffix), {})
